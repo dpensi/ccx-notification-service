@@ -193,6 +193,24 @@ func TestLoadProcessingConfiguration3Clusters(t *testing.T) {
 	assert.Equal(t, "ee7d2bf4-8933-4a3a-8634-3328fe806e08", processingCfg.AllowedClusters[2])
 }
 
+func TestLoadProcessingConfigurationEnvClusters(t *testing.T) {
+	envVar := "CCX_NOTIFICATION_SERVICE_CONFIG_FILE"
+
+	// configuration file with three clusters in allow list
+	mustSetEnv(t, envVar, "../tests/config2")
+	os.Setenv("CCX_NOTIFICATION_SERVICE__PROCESSING__ALLOWED_CLUSTERS", "a,b,c")
+	config, err := conf.LoadConfiguration(envVar, "")
+	assert.Nil(t, err, "Failed loading configuration file from env var!")
+
+	processingCfg := conf.GetProcessingConfiguration(config)
+
+	assert.True(t, processingCfg.FilterAllowedClusters)
+	assert.Len(t, processingCfg.AllowedClusters, 3)
+	assert.Equal(t, "a", processingCfg.AllowedClusters[0])
+	assert.Equal(t, "b", processingCfg.AllowedClusters[1])
+	assert.Equal(t, "c", processingCfg.AllowedClusters[2])
+}
+
 // TestLoadProcessingConfigurationNoClusters tests loading the processing
 // configuration sub-tree
 func TestLoadProcessingConfigurationNoClusters(t *testing.T) {

@@ -440,3 +440,29 @@ func TestFilterAllowAndBlock(t *testing.T) {
 	assert.Equal(t, cluster1, filtered[0])
 	assert.Equal(t, cluster2, filtered[1])
 }
+
+func TestFilterAllowAndBlock2(t *testing.T) {
+	// configuration used during filtering
+	config := conf.ProcessingConfiguration{
+		FilterAllowedClusters: true,
+		FilterBlockedClusters: true,
+		AllowedClusters: []string{
+			string(cluster1.ClusterName)},
+		BlockedClusters: []string{
+			string(cluster2.ClusterName)}}
+
+	var clusters []types.ClusterEntry
+
+	// list of clusters at input
+	clusters = append(clusters, cluster1, cluster2, cluster3, cluster4)
+
+	// start filter
+	filtered, stat := filterClusterList(clusters, config)
+
+	// check filter output
+	assert.Len(t, filtered, 2) // are we supposed to have 2 clusters here?
+	assert.Equal(t, 4, stat.Input)
+	assert.Equal(t, 1, stat.Allowed)
+	assert.Equal(t, 1, stat.Blocked)
+	assert.Equal(t, 1, stat.Filtered)
+}

@@ -463,6 +463,6 @@ func TestFilterAllowAndBlock2(t *testing.T) {
 	assert.Len(t, filtered, 2) // are we supposed to have 2 clusters here?
 	assert.Equal(t, 4, stat.Input)
 	assert.Equal(t, 1, stat.Allowed)
-	assert.Equal(t, 1, stat.Blocked)
+	assert.Equal(t, 1, stat.Blocked) // I expect 1 but actual is 0
 	assert.Equal(t, 1, stat.Filtered)
 }
